@@ -5,10 +5,9 @@ export default function Login() {
   const { } = useForm()
   return (
     <div className='bg-shopee_orange'>
-      <div className='max-w-7xl mx-auto px-4'>
-        <div className='grid grid-cols-1 lg:grid-cols-4 py-12 lg:py-32 lg:pr-10'>
-          <div className="lg:col-start-1 lg:col-span-2 bg-left bg-shopee-login bg-auto"></div>
-          <div className='lg:col-start-3 lg:col-span-2'>
+      <div className='container'>
+        <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10 bg-left bg-shopee-login bg-cover'>
+          <div className='lg:col-start-4 lg:col-span-2'>
             <form className='p-10 rounded bg-white shadow-sm'>
               <div className='text-2xl'>Login</div>
               <div className='mt-8'>
