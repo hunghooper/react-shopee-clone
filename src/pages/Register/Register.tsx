@@ -11,7 +11,6 @@ import { ResponseApi } from 'src/types/utils.type'
 
 type FormData = Schema
 
-
 export default function Register() {
   const { register, handleSubmit, formState: { errors }, setError } = useForm<FormData>({ resolver: yupResolver(schema) })
 
