@@ -1,17 +1,15 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { getRules } from 'src/utils/rules'
+import Input from 'src/components/input'
+import { getRules, schema, Schema } from 'src/utils/rules'
 
-interface FormData {
-  email: string,
-  confirm_password: string
-  password: string
-}
+type FormData = Schema
+
 
 export default function Register() {
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm<FormData>()
+  const { register, handleSubmit, formState: { errors }, getValues } = useForm<FormData>({ resolver: yupResolver(schema) })
 
-  const rules = getRules(getValues)
   const onSubmit = handleSubmit((data) => {
     console.log(data)
   })
@@ -22,36 +20,9 @@ export default function Register() {
           <div className='lg:col-start-4 lg:col-span-2'>
             <form className='p-10 rounded bg-white shadow-sm' noValidate onSubmit={onSubmit}>
               <div className='text-2xl'>Register</div>
-              <div className='mt-8'>
-                <input
-                  type='email'
-                  autoComplete='on'
-                  {...register('email', rules.email)}
-                  placeholder='Email'
-                  className='p-3 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
-                />
-              </div>
-              <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errors.email?.message}</div>
-              <div className='mt-2'>
-                <input
-                  type='password'
-                  autoComplete='on'
-                  {...register('password', rules.password)}
-                  placeholder='Password'
-                  className='p-3 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
-                />
-              </div>
-              <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errors.password?.message}</div>
-              <div className='mt-2'>
-                <input
-                  type='password'
-                  autoComplete='on'
-                  {...register('confirm_password', { ...rules.confirm_password })}
-                  placeholder='Confirm password'
-                  className='p-3 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
-                />
-              </div>
-              <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errors.confirm_password?.message}</div>
+              <Input className='mt-8' type='email' name='email' autoComplete='on' register={register} errorMessage={errors.email?.message} placeholder='Email' />
+              <Input className='mt-2' type='password' name='password' autoComplete='on' register={register} errorMessage={errors.password?.message} placeholder='Password' />
+              <Input className='mt-2' type='password' name='confirm_password' autoComplete='on' register={register} errorMessage={errors.confirm_password?.message} placeholder='Confirm password' />
               <button type='submit' className='mt-3 w-full text-center bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 '>
                 Register
               </button>
@@ -64,7 +35,7 @@ export default function Register() {
             </form>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
