@@ -1,4 +1,4 @@
-import { RegisterOptions, UseFormRegister } from "react-hook-form"
+import { RegisterOptions, UseFormRegister } from 'react-hook-form'
 
 type Props = {
   className?: string
@@ -10,7 +10,16 @@ type Props = {
   rules?: RegisterOptions
   autoComplete: string
 }
-export default function Input({ className, name, placeholder, type, errorMessage, register, rules, autoComplete }: Props) {
+export default function Input({
+  className,
+  name,
+  placeholder,
+  type,
+  errorMessage,
+  register,
+  rules,
+  autoComplete
+}: Props) {
   return (
     <div className={className}>
       <input
@@ -22,7 +31,5 @@ export default function Input({ className, name, placeholder, type, errorMessage
       />
       <div className='mt-1 text-red-600 min-h-[1rem] text-sm'>{errorMessage}</div>
     </div>
-
   )
 }
-
