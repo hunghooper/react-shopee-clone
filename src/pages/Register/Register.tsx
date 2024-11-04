@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
-import Input from 'src/components/input'
+import Input from 'src/components/Input'
 import { getRules, schema, Schema } from 'src/utils/rules'
 import { registerAccount } from 'src/apis/auth.apis'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
@@ -16,7 +16,7 @@ import Button from 'src/components/Button/Button'
 type FormData = Schema
 
 export default function Register() {
-  const { setIsAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, setProfile } = useContext(AppContext)
   const navigate = useNavigate()
   const {
     register,
@@ -32,8 +32,9 @@ export default function Register() {
   const onSubmit = handleSubmit((data) => {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         setIsAuthenticated(true)
+        setProfile(data.data.data.user)
         navigate('/')
       },
       onError: (error) => {

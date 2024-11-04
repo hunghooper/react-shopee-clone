@@ -8,12 +8,13 @@ import { AppContext } from 'src/contexts/app.context';
 import path from 'src/constants/path';
 
 export default function Header() {
-  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
+  const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
 
   const logoutAccountMutation = useMutation({
     mutationFn: logoutAccount,
     onSuccess: () => {
       setIsAuthenticated(false)
+      setProfile(null)
     }
   })
 
@@ -25,7 +26,7 @@ export default function Header() {
       <div className='container'>
         <div className='flex justify-end'>
           <Popover
-            className='flex items py-1 hover:text-gray-300 cursor-pointer'
+            className='flex items py-1 hover:text-white/70 cursor-pointer'
             renderPopover={
               <div className="bg-white relative shadow-md rounded-sm border border-gray-200 pr-28 pl-0.8">
                 <div className="flex flex-col py-2 px-3">
@@ -62,7 +63,7 @@ export default function Header() {
             </svg>
           </Popover>
           {isAuthenticated && <Popover
-            className='flex items-center py-1 hover:text-gray-300 cursor-pointer ml-6'
+            className='flex items-center py-1 hover:text-white/70 cursor-pointer ml-6'
             renderPopover={
               <div className="bg-white relative shadow-md rounded-sm border border-gray-200">
                 <Link
@@ -90,7 +91,7 @@ export default function Header() {
                 className='w-full h-full object-cover rounded-full'
               />
             </div>
-            <div>Hung Mai</div>
+            <div>{profile?.email}</div>
           </Popover>}
           {!isAuthenticated && (
             <div className="flex items-center">
