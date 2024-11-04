@@ -1,18 +1,23 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { loginAccount } from 'src/apis/auth.apis'
 import { Schema, schema } from 'src/utils/rules'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
-import { ResponseApi } from 'src/types/utils.type'
+import { ErrorResponse } from 'src/types/utils.type'
 import Input from 'src/components/input'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button/Button'
 
 type FormData = Omit<Schema, 'confirm_password'>
 const loginSchema = schema.omit(['confirm_password'])
 
 export default function Login() {
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -26,11 +31,12 @@ export default function Login() {
 
   const onSubmit = handleSubmit((data) => {
     loginAccountMutation.mutate(data, {
-      onSuccess: (data) => {
-        console.log(data)
+      onSuccess: () => {
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntity<ResponseApi<FormData>>(error)) {
+        if (isAxiosUnprocessableEntity<ErrorResponse<FormData>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -48,7 +54,7 @@ export default function Login() {
   return (
     <div className='bg-shopee_orange'>
       <div className='container '>
-        <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10 bg-left bg-shopee-login bg-cover max-h-[900px] align-middle '>
+        <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10 bg-left bg-shopee-login bg-cover '>
           <div className='lg:col-start-4 lg:col-span-2'>
             <form className='p-10 rounded bg-white shadow-sm' noValidate onSubmit={onSubmit}>
               <div className='text-2xl'>Login</div>
@@ -70,9 +76,11 @@ export default function Login() {
                 errorMessage={errors.password?.message}
                 placeholder='Password'
               />
-              <button className='mt-2 w-full text-center bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 '>
+              <Button className='mt-3 w-full bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 flex justify-center items-center'
+                disabled={loginAccountMutation.isPending}
+                isLoading={loginAccountMutation.isPending}>
                 Login
-              </button>
+              </Button>
               <div className='flex items-center mt-8 justify-center'>
                 <span className='text-gray-400'>Are you new to Shopee?</span>
                 <Link className='text-red-400 ml-1' to={'/register'}>

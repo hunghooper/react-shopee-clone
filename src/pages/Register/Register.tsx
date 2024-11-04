@@ -1,17 +1,23 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import Input from 'src/components/input'
 import { getRules, schema, Schema } from 'src/utils/rules'
 import { registerAccount } from 'src/apis/auth.apis'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
-import { ResponseApi } from 'src/types/utils.type'
+import { ErrorResponse } from 'src/types/utils.type'
+import { AppContext } from 'src/contexts/app.context'
+import { useContext } from 'react'
+import path from 'src/constants/path'
+import Button from 'src/components/Button/Button'
 
 type FormData = Schema
 
 export default function Register() {
+  const { setIsAuthenticated } = useContext(AppContext)
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -26,11 +32,12 @@ export default function Register() {
   const onSubmit = handleSubmit((data) => {
     const body = omit(data, ['confirm_password'])
     registerAccountMutation.mutate(body, {
-      onSuccess: (data) => {
-        console.log(data)
+      onSuccess: () => {
+        setIsAuthenticated(true)
+        navigate('/')
       },
       onError: (error) => {
-        if (isAxiosUnprocessableEntity<ResponseApi<Omit<FormData, 'confirm_password'>>>(error)) {
+        if (isAxiosUnprocessableEntity<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
           const formError = error.response?.data.data
           if (formError) {
             Object.keys(formError).forEach((key) => {
@@ -40,18 +47,6 @@ export default function Register() {
               })
             })
           }
-          // if (formError?.email) {
-          //   setError('email', {
-          //     message: formError.email,
-          //     type: 'Sever'
-          //   })
-          // }
-          // if (formError?.password) {
-          //   setError('password', {
-          //     message: formError.password,
-          //     type: 'Sever'
-          //   })
-          // }
         }
       }
     })
@@ -59,7 +54,7 @@ export default function Register() {
   return (
     <div className='bg-shopee_orange'>
       <div className='container '>
-        <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10 bg-left bg-shopee-login bg-cover max-h-[600px] align-middle '>
+        <div className='grid grid-cols-1 lg:grid-cols-5 py-12 lg:py-32 lg:pr-10 bg-left bg-shopee-login bg-cover '>
           <div className='lg:col-start-4 lg:col-span-2'>
             <form className='p-10 rounded bg-white shadow-sm' noValidate onSubmit={onSubmit}>
               <div className='text-2xl'>Register</div>
@@ -90,15 +85,15 @@ export default function Register() {
                 errorMessage={errors.confirm_password?.message}
                 placeholder='Confirm password'
               />
-              <button
-                type='submit'
-                className='mt-3 w-full text-center bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 '
+              <Button className='mt-3 w-full bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 flex justify-center items-center'
+                disabled={registerAccountMutation.isPending}
+                isLoading={registerAccountMutation.isPending}
               >
                 Register
-              </button>
+              </Button>
               <div className='flex items-center mt-8 justify-center'>
                 <span className='text-gray-400'>You already have an account?</span>
-                <Link className='text-red-400 ml-1' to={'/login'}>
+                <Link className='text-red-400 ml-1' to={path.login}>
                   Login
                 </Link>
               </div>
@@ -106,6 +101,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }

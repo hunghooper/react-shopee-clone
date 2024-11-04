@@ -1,8 +1,25 @@
 
 import { Link } from 'react-router-dom';
 import Popover from '../Popover';
+import { useMutation } from '@tanstack/react-query';
+import { logoutAccount } from 'src/apis/auth.apis';
+import { useContext } from 'react';
+import { AppContext } from 'src/contexts/app.context';
+import path from 'src/constants/path';
 
 export default function Header() {
+  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext)
+
+  const logoutAccountMutation = useMutation({
+    mutationFn: logoutAccount,
+    onSuccess: () => {
+      setIsAuthenticated(false)
+    }
+  })
+
+  const handleLogout = () => {
+    logoutAccountMutation.mutate()
+  }
   return (
     <div className='pb-5 pt-2 bg-gradient-to-b from-[#f53d2d] to-[#ff6633] text-white'>
       <div className='container'>
@@ -44,12 +61,12 @@ export default function Header() {
               <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
             </svg>
           </Popover>
-          <Popover
+          {isAuthenticated && <Popover
             className='flex items-center py-1 hover:text-gray-300 cursor-pointer ml-6'
             renderPopover={
               <div className="bg-white relative shadow-md rounded-sm border border-gray-200">
                 <Link
-                  to={'/profile'}
+                  to={path.profile}
                   className="block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left">
                   My account
                 </Link>
@@ -59,6 +76,7 @@ export default function Header() {
                   Order
                 </Link>
                 <button
+                  onClick={handleLogout}
                   className="block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left">
                   Logout
                 </button>
@@ -73,7 +91,14 @@ export default function Header() {
               />
             </div>
             <div>Hung Mai</div>
-          </Popover>
+          </Popover>}
+          {!isAuthenticated && (
+            <div className="flex items-center">
+              <Link to={'/register'} className='mx-3 capitalize hover:text-white/70'>Register</Link>
+              <div className="border-r-[1px] border-r-white/40 h-4"></div>
+              <Link to={'/login'} className='mx-3 capitalize hover:text-white/70'>Login</Link>
+            </div>
+          )}
         </div>
         <div className='grid grid-cols-12 gap-4 mt-4 items-end'>
           <Link to='/' className='col-span-2 '>
