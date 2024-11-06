@@ -1,11 +1,10 @@
-
-import { Link } from 'react-router-dom';
-import Popover from '../Popover';
-import { useMutation } from '@tanstack/react-query';
-import { logoutAccount } from 'src/apis/auth.apis';
-import { useContext } from 'react';
-import { AppContext } from 'src/contexts/app.context';
-import path from 'src/constants/path';
+import { Link } from 'react-router-dom'
+import Popover from '../Popover'
+import { useMutation } from '@tanstack/react-query'
+import { logoutAccount } from 'src/apis/auth.apis'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
+import path from 'src/constants/path'
 
 export default function Header() {
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
@@ -28,10 +27,10 @@ export default function Header() {
           <Popover
             className='flex items py-1 hover:text-white/70 cursor-pointer'
             renderPopover={
-              <div className="bg-white relative shadow-md rounded-sm border border-gray-200 pr-28 pl-0.8">
-                <div className="flex flex-col py-2 px-3">
-                  <button className="py-2 px-3 hover:text-shopee_orange text-left">Tiếng Việt</button>
-                  <button className="py-2 px-3 hover:text-shopee_orange mt-1 text-left">English</button>
+              <div className='bg-white relative shadow-md rounded-sm border border-gray-200 pr-28 pl-0.8'>
+                <div className='flex flex-col py-2 px-3'>
+                  <button className='py-2 px-3 hover:text-shopee_orange text-left'>Tiếng Việt</button>
+                  <button className='py-2 px-3 hover:text-shopee_orange mt-1 text-left'>English</button>
                 </div>
               </div>
             }
@@ -62,42 +61,51 @@ export default function Header() {
               <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
             </svg>
           </Popover>
-          {isAuthenticated && <Popover
-            className='flex items-center py-1 hover:text-white/70 cursor-pointer ml-6'
-            renderPopover={
-              <div className="bg-white relative shadow-md rounded-sm border border-gray-200">
-                <Link
-                  to={path.profile}
-                  className="block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left">
-                  My account
-                </Link>
-                <Link
-                  to={'/'}
-                  className="block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left">
-                  Order
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left">
-                  Logout
-                </button>
+          {isAuthenticated && (
+            <Popover
+              className='flex items-center py-1 hover:text-white/70 cursor-pointer ml-6'
+              renderPopover={
+                <div className='bg-white relative shadow-md rounded-sm border border-gray-200'>
+                  <Link
+                    to={path.profile}
+                    className='block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left'
+                  >
+                    My account
+                  </Link>
+                  <Link
+                    to={'/'}
+                    className='block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left'
+                  >
+                    Order
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className='block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left'
+                  >
+                    Logout
+                  </button>
+                </div>
+              }
+            >
+              <div className='w-6 h-6 mr-2 flex-shrink-0'>
+                <img
+                  src='https://down-vn.img.susercontent.com/file/691744eacbab85fed63697cf61fd7c66_tn'
+                  alt='avatar'
+                  className='w-full h-full object-cover rounded-full'
+                />
               </div>
-            }
-          >
-            <div className='w-6 h-6 mr-2 flex-shrink-0'>
-              <img
-                src='https://down-vn.img.susercontent.com/file/691744eacbab85fed63697cf61fd7c66_tn'
-                alt='avatar'
-                className='w-full h-full object-cover rounded-full'
-              />
-            </div>
-            <div>{profile?.email}</div>
-          </Popover>}
+              <div>{profile?.email}</div>
+            </Popover>
+          )}
           {!isAuthenticated && (
-            <div className="flex items-center">
-              <Link to={'/register'} className='mx-3 capitalize hover:text-white/70'>Register</Link>
-              <div className="border-r-[1px] border-r-white/40 h-4"></div>
-              <Link to={'/login'} className='mx-3 capitalize hover:text-white/70'>Login</Link>
+            <div className='flex items-center'>
+              <Link to={'/register'} className='mx-3 capitalize hover:text-white/70'>
+                Register
+              </Link>
+              <div className='border-r-[1px] border-r-white/40 h-4'></div>
+              <Link to={'/login'} className='mx-3 capitalize hover:text-white/70'>
+                Login
+              </Link>
             </div>
           )}
         </div>
@@ -138,66 +146,84 @@ export default function Header() {
           <div className='col-span-1 justify-self-end'>
             <Popover
               renderPopover={
-                <div className="bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] text-sm">
-                  <div className="p-2">
-                    <div className="text-gray-400 capitalize">Recently Added Products</div>
-                    <div className="mt-5">
-                      <div className="mt-4 flex">
-                        <div className="flex-shrink-0">
-                          <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b" alt="anh" className='w-11 h-11 object-cover' />
+                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] text-sm'>
+                  <div className='p-2'>
+                    <div className='text-gray-400 capitalize'>Recently Added Products</div>
+                    <div className='mt-5'>
+                      <div className='mt-4 flex'>
+                        <div className='flex-shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
+                            alt='anh'
+                            className='w-11 h-11 object-cover'
+                          />
                         </div>
-                        <div className="flex-grow ml-2 overflow-hidden">
-                          <div className="truncate">
+                        <div className='flex-grow ml-2 overflow-hidden'>
+                          <div className='truncate'>
                             Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
                           </div>
                         </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-shopee_orange">₫98.000</span>
+                        <div className='ml-2 flex-shrink-0'>
+                          <span className='text-shopee_orange'>₫98.000</span>
                         </div>
                       </div>
-                      <div className="mt-4 flex">
-                        <div className="flex-shrink-0">
-                          <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b" alt="anh" className='w-11 h-11 object-cover' />
+                      <div className='mt-4 flex'>
+                        <div className='flex-shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
+                            alt='anh'
+                            className='w-11 h-11 object-cover'
+                          />
                         </div>
-                        <div className="flex-grow ml-2 overflow-hidden">
-                          <div className="truncate">
+                        <div className='flex-grow ml-2 overflow-hidden'>
+                          <div className='truncate'>
                             Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
                           </div>
                         </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-shopee_orange">₫98.000</span>
+                        <div className='ml-2 flex-shrink-0'>
+                          <span className='text-shopee_orange'>₫98.000</span>
                         </div>
-                      </div><div className="mt-4 flex">
-                        <div className="flex-shrink-0">
-                          <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b" alt="anh" className='w-11 h-11 object-cover' />
+                      </div>
+                      <div className='mt-4 flex'>
+                        <div className='flex-shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
+                            alt='anh'
+                            className='w-11 h-11 object-cover'
+                          />
                         </div>
-                        <div className="flex-grow ml-2 overflow-hidden">
-                          <div className="truncate">
+                        <div className='flex-grow ml-2 overflow-hidden'>
+                          <div className='truncate'>
                             Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
                           </div>
                         </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-shopee_orange">₫98.000</span>
+                        <div className='ml-2 flex-shrink-0'>
+                          <span className='text-shopee_orange'>₫98.000</span>
                         </div>
-                      </div><div className="mt-4 flex">
-                        <div className="flex-shrink-0">
-                          <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b" alt="anh" className='w-11 h-11 object-cover' />
+                      </div>
+                      <div className='mt-4 flex'>
+                        <div className='flex-shrink-0'>
+                          <img
+                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
+                            alt='anh'
+                            className='w-11 h-11 object-cover'
+                          />
                         </div>
-                        <div className="flex-grow ml-2 overflow-hidden">
-                          <div className="truncate">
+                        <div className='flex-grow ml-2 overflow-hidden'>
+                          <div className='truncate'>
                             Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
                           </div>
                         </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <span className="text-shopee_orange">₫98.000</span>
+                        <div className='ml-2 flex-shrink-0'>
+                          <span className='text-shopee_orange'>₫98.000</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex mt-6 items-center justify-between">
-                      <div className="capitalize text-xs text-gray-500">
-                        29 More Products in Cart
-                      </div>
-                      <button className="capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange">View My Shopping Cart</button>
+                    <div className='flex mt-6 items-center justify-between'>
+                      <div className='capitalize text-xs text-gray-500'>29 More Products in Cart</div>
+                      <button className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
+                        View My Shopping Cart
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -222,7 +248,7 @@ export default function Header() {
             </Popover>
           </div>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   )
 }

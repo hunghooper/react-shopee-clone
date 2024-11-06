@@ -86,7 +86,8 @@ export default function Register() {
                 errorMessage={errors.confirm_password?.message}
                 placeholder='Confirm password'
               />
-              <Button className='mt-3 w-full bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 flex justify-center items-center'
+              <Button
+                className='mt-3 w-full bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 flex justify-center items-center'
                 disabled={registerAccountMutation.isPending}
                 isLoading={registerAccountMutation.isPending}
               >
@@ -102,6 +103,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </div >
+    </div>
   )
 }

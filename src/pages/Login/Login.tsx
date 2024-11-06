@@ -77,9 +77,11 @@ export default function Login() {
                 errorMessage={errors.password?.message}
                 placeholder='Password'
               />
-              <Button className='mt-3 w-full bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 flex justify-center items-center'
+              <Button
+                className='mt-3 w-full bg-shopee_orange py-4 px-2 uppercase text-white hover:bg-shopee_orange/80 flex justify-center items-center'
                 disabled={loginAccountMutation.isPending}
-                isLoading={loginAccountMutation.isPending}>
+                isLoading={loginAccountMutation.isPending}
+              >
                 Login
               </Button>
               <div className='flex items-center mt-8 justify-center'>
