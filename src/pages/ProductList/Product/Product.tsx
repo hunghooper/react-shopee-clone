@@ -1,28 +1,34 @@
 import { Link } from 'react-router-dom'
+import { Product as ProductType } from 'src/types/product.type'
+import { formatCurrency, formatNumberToSocialStyle } from 'src/utils/utils'
 
-export default function Product() {
+interface Props {
+  product: ProductType
+}
+
+export default function Product({ product }: Props) {
   return (
     <Link to={''}>
       <div className='bg-white shadow hover:shadow-sm hover:-translate-y-[-0.04rem] transition-transform duration-100 overflow-hidden'>
         <div className='relative w-full pt-[100%]'>
           <img
-            src='https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lza8qqegw3oh70_tn.webp'
-            alt='anh'
+            src={product.images[0]}
+            alt={product.name}
             className='absolute top-0 left-0 bg-white w-full h-full object-cover'
           />
         </div>
         <div className='p-2 overflow-hidden'>
           <div className='line-clamp-2 min-h-[2rem] text-xs'>
-            Tai Nghe Mèo Bluetooth P47M, Tai Mèo Dễ Thương Có Mic, Âm Bass Mạnh Mẽ Nghe Nhạc Cực Hay Bảo Hành 1 Năm
+            {product.name}
           </div>
           <div className='flex items-center mt-3 gap-1.5'>
             <div className='line-through max-w-[50%] text-gray-500 truncate'>
               <span className='text-xs'>₫</span>
-              <span>10000</span>
+              <span>{formatCurrency(product.price_before_discount)}</span>
             </div>
             <div className='text-shopee_orange '>
               <span className='text-xs'>₫</span>
-              <span>3000</span>
+              <span>{formatCurrency(product.price)}</span>
             </div>
           </div>
           <div className='mt-3 flex items-center justify-start'>
@@ -42,7 +48,10 @@ export default function Product() {
                 </svg>
               </div>
             </div>
-            <div className='ml-1.5 text-sm'>5.6k Sold</div>
+            <div className='ml-1.5 text-sm'>
+              <span>{formatNumberToSocialStyle(product.sold)}</span>
+              <span className='ml-1'>Sold</span>
+            </div>
           </div>
         </div>
       </div>
