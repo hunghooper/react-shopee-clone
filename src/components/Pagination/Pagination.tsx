@@ -1,13 +1,16 @@
 import classNames from 'classnames'
+import { createSearchParams, Link } from 'react-router-dom'
+import path from 'src/constants/path'
+import { QueryConfig } from 'src/pages/ProductList/ProductList'
 
 interface Props {
-  currentPage: number,
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>,
+  queryConfig: QueryConfig,
   pageSize: number
 }
 
 const RANGE = 2
-export default function Pagination({ pageSize, currentPage, setCurrentPage }: Props) {
+export default function Pagination({ pageSize, queryConfig }: Props) {
+  const currentPage = Number(queryConfig.page)
   const renderPagination = () => {
     let frontEllipsis = false
     let backEllipsis = false
@@ -16,7 +19,7 @@ export default function Pagination({ pageSize, currentPage, setCurrentPage }: Pr
       if (!frontEllipsis) {
         frontEllipsis = true
         return (
-          <div className="bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border" key={index}> ...</div>
+          <span className="bg-white rounded px-3 py-2 shadow-sm mx-2 border" key={index}> ...</span>
         )
       }
     }
@@ -25,7 +28,7 @@ export default function Pagination({ pageSize, currentPage, setCurrentPage }: Pr
       if (!backEllipsis) {
         backEllipsis = true
         return (
-          <div className="bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border" key={index}> ...</div>
+          <span className="bg-white rounded px-3 py-2 shadow-sm mx-2 border" key={index}> ...</span>
         )
       }
     }
@@ -42,18 +45,56 @@ export default function Pagination({ pageSize, currentPage, setCurrentPage }: Pr
         }
       }
       return (
-        <div className={classNames("bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border", {
-          'border-cyan-400': pageNumber === currentPage,
-          'border-transparent': pageNumber != currentPage
-        })} key={index} onClick={() => { setCurrentPage(pageNumber) }}> {pageNumber}</div >
+        <Link
+          to={{
+            pathname: path.home,
+            search: createSearchParams({
+              ...queryConfig,
+              page: pageNumber.toString()
+            }).toString()
+          }}
+          className={classNames("bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border", {
+            'border-cyan-400': pageNumber === currentPage,
+            'border-transparent': pageNumber != currentPage
+          })} key={index}>
+          {pageNumber}
+        </Link >
       )
     })
   }
   return (
     <div className="flex flex-wrap mt-6 justify-center">
-      <div className="bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border">Prev</div>
+      {currentPage === 1 ?
+        <span className="bg-slate-100 rounded px-3 py-2 shadow-sm mx-2 border">Prev</span>
+        :
+        <Link
+          to={{
+            pathname: path.home,
+            search: createSearchParams({
+              ...queryConfig,
+              page: (currentPage - 1).toString()
+            }).toString()
+          }}
+          className='bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border'>
+          Prev
+        </Link>
+      }
       {renderPagination()}
-      <div className="bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border">Next</div>
+      {currentPage === pageSize ?
+        <span className="bg-slate-100 rounded px-3 py-2 shadow-sm mx-2 border">Next</span>
+        :
+        <Link
+          to={{
+            pathname: path.home,
+            search: createSearchParams({
+              ...queryConfig,
+              page: (currentPage + 1).toString()
+            }).toString()
+          }}
+          className='bg-white rounded px-3 py-2 shadow-sm mx-2 cursor-pointer border'>
+          Next
+        </Link>
+      }
     </div>
   )
 }
