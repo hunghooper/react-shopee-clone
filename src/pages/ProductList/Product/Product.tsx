@@ -18,9 +18,7 @@ export default function Product({ product }: Props) {
           />
         </div>
         <div className='p-2 overflow-hidden'>
-          <div className='line-clamp-2 min-h-[2rem] text-xs'>
-            {product.name}
-          </div>
+          <div className='line-clamp-2 min-h-[2rem] text-xs'>{product.name}</div>
           <div className='flex items-center mt-3 gap-1.5'>
             <div className='line-through max-w-[50%] text-gray-500 truncate'>
               <span className='text-xs'>₫</span>
