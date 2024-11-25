@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { omit } from 'lodash'
 import Input from 'src/components/Input'
-import { getRules, schema, Schema } from 'src/utils/rules'
+import { schema, Schema } from 'src/utils/rules'
 import authApi from 'src/apis/auth.apis'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
@@ -13,7 +13,8 @@ import { useContext } from 'react'
 import path from 'src/constants/path'
 import Button from 'src/components/Button/Button'
 
-type FormData = Schema
+type FormData = Pick<Schema, 'email' | 'password' | 'confirm_password'>
+const registerSchema = schema.pick(['email', 'password', 'confirm_password'])
 
 export default function Register() {
   const { setIsAuthenticated, setProfile } = useContext(AppContext)
@@ -23,7 +24,7 @@ export default function Register() {
     handleSubmit,
     formState: { errors },
     setError
-  } = useForm<FormData>({ resolver: yupResolver(schema) })
+  } = useForm<FormData>({ resolver: yupResolver(registerSchema) })
 
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormData, 'confirm_password'>) => authApi.registerAccount(body)

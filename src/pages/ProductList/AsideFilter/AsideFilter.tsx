@@ -1,18 +1,52 @@
-import { createSearchParams, Link } from 'react-router-dom'
+import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Button from 'src/components/Button/Button'
 import Input from 'src/components/Input'
 import path from 'src/constants/path'
 import { Category } from 'src/types/category.type'
 import { QueryConfig } from '../ProductList'
 import classNames from 'classnames'
+import InputNumber from 'src/components/InputNumber'
+import { useForm, Controller } from 'react-hook-form'
+import { Schema, schema } from 'src/utils/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { NoUndefinedField } from 'src/types/utils.type'
 
 interface Props {
   categoriesData: Category[]
   queryConfig: QueryConfig
 }
 
+type FormData = NoUndefinedField<Pick<Schema, 'price_max' | 'price_min'>>
+
+const priceSchema = schema.pick(['price_max', 'price_min'])
+
 export default function AsideFilter({ categoriesData, queryConfig }: Props) {
   const { category } = queryConfig
+  const navigate = useNavigate()
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    trigger
+  } = useForm<FormData>({
+    defaultValues: {
+      price_min: '',
+      price_max: ''
+    },
+    resolver: yupResolver(priceSchema)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    navigate({
+      pathname: path.home,
+      search: createSearchParams({
+        ...queryConfig,
+        price_min: data.price_min,
+        price_max: data.price_max
+      }).toString()
+    })
+  })
+
   return (
     <div className='py-4'>
       <Link
@@ -84,24 +118,47 @@ export default function AsideFilter({ categoriesData, queryConfig }: Props) {
       <div className='bg-gray-300 h-[1px] my-4' />
       <div className='my-5'>
         <div>Price Range</div>
-        <form className='mt-2'>
+        <form className='mt-2' onSubmit={onSubmit}>
           <div className='flex items-start'>
-            <Input
-              type='text'
-              className='grow'
-              name='from'
-              placeholder='₫ MIN'
-              classNameInput='p-1 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
+            <Controller
+              control={control}
+              name='price_min'
+              render={({ field }) => (
+                <InputNumber
+                  type='text'
+                  className='grow'
+                  placeholder='₫ MIN'
+                  classNameInput='p-1 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
+                  classNameError='hidden'
+                  {...field}
+                  onChange={(event) => {
+                    field.onChange(event)
+                    trigger('price_max')
+                  }}
+                />
+              )}
             />
             <div className='mt-2 mx-2 shrink-0'>-</div>
-            <Input
-              type='text'
-              className='grow'
-              name='to'
-              placeholder='₫ MAX'
-              classNameInput='p-1 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
+            <Controller
+              control={control}
+              name='price_max'
+              render={({ field }) => (
+                <InputNumber
+                  type='text'
+                  className='grow'
+                  placeholder='₫ MAX'
+                  classNameInput='p-1 w-full outline-none border border-gray-200 focus:border-gray-300 rounded-sm focus:shadow-sm'
+                  classNameError='hidden'
+                  {...field}
+                  onChange={(event) => {
+                    field.onChange(event)
+                    trigger('price_min')
+                  }}
+                />
+              )}
             />
           </div>
+          <div className='mt-1 text-red-600 min-h-[1rem] text-sm flex justify-center'>{errors.price_min?.message}</div>
           <Button className='w-full p-2 bg-shopee_orange text-white uppercase text-sm  hover:bg-shopee_orange/80 flex justify-center items-center rounded-sm'>
             APPLY
           </Button>
