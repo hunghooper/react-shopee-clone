@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { isUndefined, omitBy } from 'lodash'
 import AsideFilter from './AsideFilter'
-import Product from './Product/Product'
+import Product from './components/Product/Product'
 import SortProductList from './SortProductList'
 import useQueryParam from 'src/hooks/useQueryParam'
 import productApi from 'src/apis/product.apis'
