@@ -1,6 +1,7 @@
 export interface Product {
   _id: string
   images: string[]
+  image: string
   price: number
   rating: number
   price_before_discount: number
