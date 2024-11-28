@@ -5,16 +5,18 @@ import productApi from 'src/apis/product.apis'
 import InputNumber from 'src/components/InputNumber'
 import ProductRating from 'src/components/ProductRating'
 import { formatCurrency, formatNumberToSocialStyle, rateSale } from 'src/utils/utils'
-import { ProductListConfig } from 'src/types/product.type'
+import { Product as ProductType, ProductListConfig } from 'src/types/product.type'
 import Product from '../ProductList/components/Product'
+import { useEffect, useMemo, useState } from 'react'
 
 export default function ProductDetail() {
   const { id } = useParams()
+  const [currentIndexImages, setCurrentIndexImage] = useState([0, 5])
+  const [activeImage, setActiveImage] = useState('')
   const { data: productDetailData } = useQuery({
     queryKey: ['productDetail', id],
     queryFn: () => productApi.getProduct(id as string)
   })
-  const product = productDetailData?.data.data
   const { data: productsData } = useQuery({
     queryKey: ['products', productDetailData?.data.data.category],
     queryFn: () => {
@@ -22,7 +24,33 @@ export default function ProductDetail() {
     },
     placeholderData: keepPreviousData
   })
+  const product = productDetailData?.data.data
+  const currentImage = useMemo(
+    () => (product ? product.images.slice(...currentIndexImages) : []),
+    [product, currentIndexImages]
+  )
 
+  useEffect(() => {
+    if (product && product.images.length > 0) {
+      setActiveImage(product.images[0])
+    }
+  }, [product])
+
+  const chooseActiveImage = (img: string) => {
+    setActiveImage(img)
+  }
+
+  const prev = () => {
+    if (currentIndexImages[0] > 0) {
+      setCurrentIndexImage((prev) => [prev[0] - 1, prev[1] - 1])
+    }
+  }
+
+  const next = () => {
+    if (currentIndexImages[1] < (product as ProductType).images.length) {
+      setCurrentIndexImage((prev) => [prev[0] + 1, prev[1] + 1])
+    }
+  }
   if (!product) return null
   return (
     <div className='bg-neutral-100 py-6'>
@@ -32,13 +60,16 @@ export default function ProductDetail() {
             <div className='col-span-5'>
               <div className='relative w-full pt-[100%]'>
                 <img
-                  src={product.image}
+                  src={activeImage}
                   alt={product.name}
                   className='absolute top-0 left-0 bg-white w-full h-full object-cover'
                 />
               </div>
               <div className='relative mt-4 grid grid-cols-5 gap-1'>
-                <button className='absolute bg-black/20 left-0 z-10 top-1/2 h-9 w-5 -translate-y-1/2 text-white'>
+                <button
+                  className='absolute bg-black/20 left-0 z-10 top-1/2 h-9 w-5 -translate-y-1/2 text-white'
+                  onClick={prev}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
@@ -50,12 +81,12 @@ export default function ProductDetail() {
                     <path strokeLinecap='round' strokeLinejoin='round' d='M15.75 19.5 8.25 12l7.5-7.5' />
                   </svg>
                 </button>
-                {product.images.slice(0, 5).map((img, index) => {
-                  const isActive = index === 0
+                {currentImage.map((img) => {
+                  const isActive = img === activeImage
                   return (
-                    <div className='relative w-full pt-[100%]' key={img}>
+                    <div className='relative w-full pt-[100%]' key={img} onMouseMove={() => chooseActiveImage(img)}>
                       <img
-                        src={product.images[index]}
+                        src={img}
                         alt={product.name}
                         className='absolute top-0 left-0 bg-white w-full cursor-pointer h-full object-cover'
                       />
@@ -63,7 +94,10 @@ export default function ProductDetail() {
                     </div>
                   )
                 })}
-                <button className='absolute bg-black/20 right-0 z-10 top-1/2 h-9 w-5 -translate-y-1/2 text-white'>
+                <button
+                  className='absolute bg-black/20 right-0 z-10 top-1/2 h-9 w-5 -translate-y-1/2 text-white'
+                  onClick={next}
+                >
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     fill='none'
