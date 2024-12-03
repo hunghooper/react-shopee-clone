@@ -4,13 +4,14 @@ import DOMPurify from 'dompurify'
 import productApi from 'src/apis/product.apis'
 import InputNumber from 'src/components/InputNumber'
 import ProductRating from 'src/components/ProductRating'
-import { formatCurrency, formatNumberToSocialStyle, rateSale } from 'src/utils/utils'
+import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
 import { Product as ProductType, ProductListConfig } from 'src/types/product.type'
 import Product from '../ProductList/components/Product'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 export default function ProductDetail() {
-  const { id } = useParams()
+  const { nameId } = useParams()
+  const id = getIdFromNameId(nameId as string)
   const [currentIndexImages, setCurrentIndexImage] = useState([0, 5])
   const [activeImage, setActiveImage] = useState('')
   const imageRef = useRef<HTMLImageElement>(null)
