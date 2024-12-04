@@ -56,6 +56,14 @@ export const getRules = (getValues?: UseFormGetValues<any>): Rules => ({
   }
 })
 
+function testMinMax(this: yup.TestContext<yup.AnyObject>) {
+  const { price_min, price_max } = this.parent as { price_min: string; price_max: string }
+  if (price_min !== '' && price_max !== '') {
+    return Number(price_min) <= Number(price_max)
+  }
+  return price_min !== '' || price_max !== ''
+}
+
 export const schema = yup
   .object({
     email: yup
@@ -74,7 +82,17 @@ export const schema = yup
       .required('Confirm password is required')
       .max(160, 'Password must in range 6-160 words')
       .min(6, 'Password must in range 6-160 words')
-      .oneOf([yup.ref('password')], 'Confirm password does not match')
+      .oneOf([yup.ref('password')], 'Confirm password does not match'),
+    price_min: yup.string().test({
+      name: 'price-not-allowed',
+      message: 'Invalid price',
+      test: testMinMax
+    }),
+    price_max: yup.string().test({
+      name: 'price-not-allowed',
+      message: 'Invalid price',
+      test: testMinMax
+    })
   })
   .required()
 
