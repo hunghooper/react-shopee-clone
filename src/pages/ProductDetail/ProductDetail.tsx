@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import productApi from 'src/apis/product.apis'
@@ -20,14 +20,16 @@ export default function ProductDetail() {
     queryKey: ['productDetail', id],
     queryFn: () => productApi.getProduct(id as string)
   })
-  const { data: productsData } = useQuery({
-    queryKey: ['products', productDetailData?.data.data.category],
-    queryFn: () => {
-      return productApi.getProducts(productDetailData?.data.data.category as ProductListConfig)
-    },
-    placeholderData: keepPreviousData
-  })
   const product = productDetailData?.data.data
+  const queryConfig: ProductListConfig = { page: '1', limit: '20', category: product?.category._id }
+  const { data: productsData } = useQuery({
+    queryKey: ['products', queryConfig],
+    queryFn: () => {
+      return productApi.getProducts(queryConfig as ProductListConfig)
+    },
+    enabled: Boolean(product),
+    staleTime: 3 * 60 * 1000
+  })
   const currentImage = useMemo(
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
@@ -224,7 +226,7 @@ export default function ProductDetail() {
       <div className='container'>
         <div className='mt-8 p-4'>
           <div className=' text-lg uppercase text-slate-700 py-4'>you may also like</div>
-          <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3'>
+          <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3'>
             {productsData &&
               productsData?.data.data.products.map((product) => (
                 <div className='col-span-1' key={product._id}>
