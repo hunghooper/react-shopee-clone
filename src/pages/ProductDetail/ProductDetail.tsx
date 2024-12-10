@@ -81,7 +81,11 @@ export default function ProductDetail() {
         <div className='bg-white p-4 shadow rounded-sm'>
           <div className='grid grid-cols-12 gap-9'>
             <div className='col-span-5'>
-              <div className='relative w-full pt-[100%] overflow-hidden' onMouseMove={handleZoom} onMouseLeave={handleRemoveZoom}>
+              <div
+                className='relative w-full pt-[100%] overflow-hidden'
+                onMouseMove={handleZoom}
+                onMouseLeave={handleRemoveZoom}
+              >
                 <img
                   src={activeImage}
                   alt={product.name}
