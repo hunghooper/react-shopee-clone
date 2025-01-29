@@ -38,16 +38,16 @@ export default function Header() {
   const handleSearchSubmit = handleSubmit((data) => {
     const config = queryConfig.order
       ? omit(
-        {
+          {
+            ...queryConfig,
+            name: data.name
+          },
+          ['order', 'sort_by']
+        )
+      : {
           ...queryConfig,
           name: data.name
-        },
-        ['order', 'sort_by']
-      )
-      : {
-        ...queryConfig,
-        name: data.name
-      }
+        }
     navigate({
       pathname: path.home,
       search: createSearchParams(config).toString()
