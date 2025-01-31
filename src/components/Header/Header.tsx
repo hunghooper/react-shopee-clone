@@ -1,12 +1,12 @@
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Popover from '../Popover'
 import { useMutation } from '@tanstack/react-query'
-import authApi from 'src/apis/auth.apis'
+import authApi from '../../apis/auth.apis'
 import { useContext } from 'react'
-import { AppContext } from 'src/contexts/app.context'
-import path from 'src/constants/path'
-import useQueryConfig from 'src/hooks/useQueryConfig'
-import { schema, Schema } from 'src/utils/rules'
+import { AppContext } from '../../contexts/app.context'
+import path from '../../constants/path'
+import useQueryConfig from '../../hooks/useQueryConfig'
+import { schema, Schema } from '../../utils/rules'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { omit } from 'lodash'
@@ -38,16 +38,16 @@ export default function Header() {
   const handleSearchSubmit = handleSubmit((data) => {
     const config = queryConfig.order
       ? omit(
-          {
-            ...queryConfig,
-            name: data.name
-          },
-          ['order', 'sort_by']
-        )
-      : {
+        {
           ...queryConfig,
           name: data.name
-        }
+        },
+        ['order', 'sort_by']
+      )
+      : {
+        ...queryConfig,
+        name: data.name
+      }
     navigate({
       pathname: path.home,
       search: createSearchParams(config).toString()

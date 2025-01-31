@@ -1,16 +1,28 @@
 import { createSearchParams, Link, useNavigate } from 'react-router-dom'
-import Button from 'src/components/Button/Button'
-import path from 'src/constants/path'
-import { Category } from 'src/types/category.type'
+import Button from '../../../../components/Button/Button'
+import path from '../../../../constants/path'
+import { Category } from '../../../../types/category.type'
 import classNames from 'classnames'
-import InputNumber from 'src/components/InputNumber'
+import InputNumber from '../../../../components/InputNumber'
 import { useForm, Controller } from 'react-hook-form'
-import { Schema, schema } from 'src/utils/rules'
+import { Schema, schema } from '../../../../utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { NoUndefinedField } from 'src/types/utils.type'
+import { NoUndefinedField } from '../../../../types/utils.type'
 import { omit } from 'lodash'
-import { QueryConfig } from '../../ProductList'
 import RatingStar from '../RatingStar'
+
+type QueryConfig = {
+  page?: string | undefined;
+  limit?: string | undefined;
+  sort_by?: string | undefined;
+  order?: string | undefined;
+  exclude?: string | undefined;
+  rating_filter?: string | undefined;
+  price_max?: string | undefined;
+  price_min?: string | undefined;
+  name?: string | undefined;
+  category?: string | undefined;
+}
 
 interface Props {
   categoriesData: Category[]

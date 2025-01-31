@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import path from 'src/constants/path'
-import { Product as ProductType } from 'src/types/product.type'
-import { formatCurrency, formatNumberToSocialStyle, generateNameId } from 'src/utils/utils'
+import path from '../../../../constants/path'
+import { formatCurrency, formatNumberToSocialStyle, generateNameId } from '../../../../utils/utils'
+import { Product as ProductType } from '../../../../types/product.type'
 
 interface Props {
   product: ProductType

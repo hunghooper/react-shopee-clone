@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import DOMPurify from 'dompurify'
-import productApi from 'src/apis/product.apis'
-import InputNumber from 'src/components/InputNumber'
-import ProductRating from 'src/components/ProductRating'
-import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from 'src/utils/utils'
-import { Product as ProductType, ProductListConfig } from 'src/types/product.type'
+import { Product as ProductType, ProductListConfig } from '../../types/product.type'
 import Product from '../ProductList/components/Product'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import productApi from '../../apis/product.apis'
+import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from '../../utils/utils'
+import ProductRating from '../../components/ProductRating'
+import InputNumber from '../../components/InputNumber'
 
 export default function ProductDetail() {
   const { nameId } = useParams()
