@@ -8,7 +8,7 @@ interface QuantityControllerProps extends InputNumberProps {
   classNameWrapper?: string
 }
 
-export default function QuantityController({ max = 10, onIncrease, onDecrease, onType, classNameWrapper = 'ml-10', value, ...rest }: QuantityControllerProps) {
+export default function QuantityController({ max = 10, onIncrease, onDecrease, onType, classNameWrapper = 'mr-10', value, ...rest }: QuantityControllerProps) {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     let _value = Number(event.target.value)

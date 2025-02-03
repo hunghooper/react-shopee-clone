@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import { Product as ProductType, ProductListConfig } from '../../types/product.type'
@@ -8,6 +8,10 @@ import productApi from '../../apis/product.apis'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from '../../utils/utils'
 import ProductRating from '../../components/ProductRating'
 import QuantityController from '../../components/QuantityController'
+import purchaseApi from '../../apis/purchase.api'
+import { toast } from 'react-toastify'
+import { queryClient } from '../../main'
+import { purchasesStatus } from '../../constants/purchase'
 
 export default function ProductDetail() {
   const [buyCount, setBuyCount] = useState(1)
@@ -31,6 +35,17 @@ export default function ProductDetail() {
     enabled: Boolean(product),
     staleTime: 3 * 60 * 1000
   })
+
+  const addToCartMutation = useMutation({
+    mutationFn: purchaseApi.addToCart,
+    onSuccess: (data) => {
+      toast.success(data.data.message)
+      queryClient.invalidateQueries({
+        queryKey: ['purchases', { status: purchasesStatus.inCart }]
+      })
+    }
+  })
+
   const currentImage = useMemo(
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
@@ -77,12 +92,16 @@ export default function ProductDetail() {
     const image = imageRef.current as HTMLImageElement
     image.removeAttribute('style')
   }
-  if (!product) return null
 
   const handleBuyCount = (value: number) => {
     setBuyCount(value)
   }
 
+  const addToCart = () => {
+    addToCartMutation.mutate({ buy_count: buyCount, product_id: product?._id as string })
+  }
+
+  if (!product) return null
   return (
     <div className='bg-neutral-100 py-6'>
       <div className='container'>
@@ -170,12 +189,12 @@ export default function ProductDetail() {
                 </div>
               </div>
               <div className='mt-8 flex items-center'>
-                <span className='text-gray-500 text-sm'>Quantity</span>
+                <span className='text-gray-500 text-sm mr-8'>Quantity</span>
                 <QuantityController onDecrease={handleBuyCount} onType={handleBuyCount} onIncrease={handleBuyCount} value={buyCount} max={product.quantity} />
                 <div className='ml-6 text-sm text-gray-500'>{product.quantity} products</div>
               </div>
               <div className='mt-8 flex items-center'>
-                <button className='flex items-center justify-center text-shopee_orange border border-shopee_orange h-12 shadow-sm rounded-sm bg-shopee_orange/10 hover:bg-shopee_orange/5 px-10 capitalize'>
+                <button onClick={addToCart} className='flex items-center justify-center text-shopee_orange border border-shopee_orange h-12 shadow-sm rounded-sm bg-shopee_orange/10 hover:bg-shopee_orange/5 px-10 capitalize'>
                   <img
                     alt='icon-add-to-cart'
                     className='w-5 h-5 mr-[10px]'
