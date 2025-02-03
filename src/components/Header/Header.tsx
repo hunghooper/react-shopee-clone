@@ -231,7 +231,7 @@ export default function Header() {
                 </div>
               }
             >
-              <Link to='/' className='relative'>
+              <Link to='/' className='relative top-[-5px] left-[-35px]'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
