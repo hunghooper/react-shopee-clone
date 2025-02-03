@@ -7,9 +7,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import productApi from '../../apis/product.apis'
 import { formatCurrency, formatNumberToSocialStyle, getIdFromNameId, rateSale } from '../../utils/utils'
 import ProductRating from '../../components/ProductRating'
-import InputNumber from '../../components/InputNumber'
+import QuantityController from '../../components/QuantityController'
 
 export default function ProductDetail() {
+  const [buyCount, setBuyCount] = useState(1)
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
   const [currentIndexImages, setCurrentIndexImage] = useState([0, 5])
@@ -77,6 +78,11 @@ export default function ProductDetail() {
     image.removeAttribute('style')
   }
   if (!product) return null
+
+  const handleBuyCount = (value: number) => {
+    setBuyCount(value)
+  }
+
   return (
     <div className='bg-neutral-100 py-6'>
       <div className='container'>
@@ -165,37 +171,7 @@ export default function ProductDetail() {
               </div>
               <div className='mt-8 flex items-center'>
                 <span className='text-gray-500 text-sm'>Quantity</span>
-                <div className='ml-10 flex items-center'>
-                  <button className='flex h-8 w-8 items-center justify-center text-gray-600 rounded-l-sm border-l-gray-300 border-y-gray-300 border'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='w-4 h-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M5 12h14' />
-                    </svg>
-                  </button>
-                  <InputNumber
-                    value={1}
-                    classNameInput='flex w-14 h-8 border border-y-gray-300 items-center justify-center text-center outline-none'
-                    classNameError='hidden'
-                  />
-                  <button className=' flex h-8 w-8 items-center justify-center text-gray-600 rounded-r-sm border-r-gray-300 border-y-gray-300 border'>
-                    <svg
-                      xmlns='http://www.w3.org/2000/svg'
-                      fill='none'
-                      viewBox='0 0 24 24'
-                      strokeWidth={1.5}
-                      stroke='currentColor'
-                      className='w-4 h-4'
-                    >
-                      <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-                    </svg>
-                  </button>
-                </div>
+                <QuantityController onDecrease={handleBuyCount} onType={handleBuyCount} onIncrease={handleBuyCount} value={buyCount} max={product.quantity} />
                 <div className='ml-6 text-sm text-gray-500'>{product.quantity} products</div>
               </div>
               <div className='mt-8 flex items-center'>
