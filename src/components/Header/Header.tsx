@@ -14,6 +14,7 @@ import { purchasesStatus } from '../../constants/purchase'
 import purchaseApi from '../../apis/purchase.api'
 import { formatCurrency } from '../../utils/utils'
 import notFoundProductIMG from '../../assets/img/not-found-product.png'
+import { queryClient } from '../../main'
 
 type FormData = Pick<Schema, 'name'>
 const nameSchema = schema.pick(['name'])
@@ -33,12 +34,14 @@ export default function Header() {
     onSuccess: () => {
       setIsAuthenticated(false)
       setProfile(null)
+      queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
     }
   })
 
   const { data: purchaseData } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
-    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart })
+    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
+    enabled: isAuthenticated
   })
 
   const purchases = purchaseData?.data.data
@@ -191,7 +194,7 @@ export default function Header() {
           <div className='col-span-1 justify-self-end'>
             <Popover
               renderPopover={
-                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] text-sm'>
+                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] max-h-[400px] text-sm'>
                   {purchases ?
                     <div className='p-2'>
                       <div className='text-gray-400 capitalize'>Recently Added Products</div>
@@ -224,21 +227,22 @@ export default function Header() {
                       </div>
                     </div>
                     :
-                    <div className='p-2'>
-                      <img src={notFoundProductIMG} alt="no-found-product" className='max-w-[240px] max-l-[240px]' />
+                    <div className='p-2 flex flex-col items-center w-full h-full'>
+                      <img src={notFoundProductIMG} alt="no-found-product" className='px-10 pt-5 w-auto h-[240px]' />
+                      <span className='py-5 text-lg capitalize'>No Product Found</span>
                     </div>
                   }
                 </div>
               }
             >
-              <Link to='/' className='relative top-[-5px] left-[-35px]'>
+              <Link to={path.cart} className='relative'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth={1.5}
                   stroke='currentColor'
-                  className='h-8 w-8'
+                  className='h-9 w-9'
                 >
                   <path
                     strokeLinecap='round'
