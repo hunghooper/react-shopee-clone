@@ -1,7 +1,20 @@
 import classNames from 'classnames'
 import { createSearchParams, Link } from 'react-router-dom'
-import path from 'src/constants/path'
-import { QueryConfig } from 'src/pages/ProductList/ProductList'
+import path from '../../constants/path'
+
+
+type QueryConfig = {
+  page?: string | undefined;
+  limit?: string | undefined;
+  sort_by?: string | undefined;
+  order?: string | undefined;
+  exclude?: string | undefined;
+  rating_filter?: string | undefined;
+  price_max?: string | undefined;
+  price_min?: string | undefined;
+  name?: string | undefined;
+  category?: string | undefined;
+}
 
 interface Props {
   queryConfig: QueryConfig

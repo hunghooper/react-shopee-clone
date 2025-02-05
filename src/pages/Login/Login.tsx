@@ -3,14 +3,14 @@ import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 
-import authApi from 'src/apis/auth.apis'
-import { Schema, schema } from 'src/utils/rules'
-import { isAxiosUnprocessableEntity } from 'src/utils/utils'
-import { ErrorResponse } from 'src/types/utils.type'
-import Input from 'src/components/Input'
+import authApi from '../../apis/auth.apis'
+import { Schema, schema } from '../../utils/rules'
+import { isAxiosUnprocessableEntity } from '../../utils/utils'
+import { ErrorResponse } from '../../types/utils.type'
+import Input from '../../components/Input'
 import { useContext } from 'react'
-import { AppContext } from 'src/contexts/app.context'
-import Button from 'src/components/Button/Button'
+import { AppContext } from '../../contexts/app.context'
+import Button from '../../components/Button/Button'
 
 type FormData = Pick<Schema, 'email' | 'password'>
 const loginSchema = schema.pick(['email', 'password'])

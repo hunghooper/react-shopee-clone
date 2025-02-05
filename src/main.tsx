@@ -9,7 +9,7 @@ import { ToastContainer } from 'react-toastify'
 import { BrowserRouter } from 'react-router-dom'
 import { AppProvider } from './contexts/app.context'
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false

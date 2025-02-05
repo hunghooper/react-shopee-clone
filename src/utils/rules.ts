@@ -92,7 +92,8 @@ export const schema = yup
       name: 'price-not-allowed',
       message: 'Invalid price',
       test: testMinMax
-    })
+    }),
+    name: yup.string().trim().required('')
   })
   .required()
 

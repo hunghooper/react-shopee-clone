@@ -1,25 +1,73 @@
-import { Link } from 'react-router-dom'
+import { createSearchParams, Link, useNavigate } from 'react-router-dom'
 import Popover from '../Popover'
-import { useMutation } from '@tanstack/react-query'
-import authApi from 'src/apis/auth.apis'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import authApi from '../../apis/auth.apis'
 import { useContext } from 'react'
-import { AppContext } from 'src/contexts/app.context'
-import path from 'src/constants/path'
+import { AppContext } from '../../contexts/app.context'
+import path from '../../constants/path'
+import useQueryConfig from '../../hooks/useQueryConfig'
+import { schema, Schema } from '../../utils/rules'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { omit } from 'lodash'
+import { purchasesStatus } from '../../constants/purchase'
+import purchaseApi from '../../apis/purchase.api'
+import { formatCurrency } from '../../utils/utils'
+import notFoundProductIMG from '../../assets/img/not-found-product.png'
+import { queryClient } from '../../main'
+
+type FormData = Pick<Schema, 'name'>
+const nameSchema = schema.pick(['name'])
+const MAX = 5
 
 export default function Header() {
   const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
+  const queryConfig = useQueryConfig()
+  const navigate = useNavigate()
+  const { register, handleSubmit } = useForm<FormData>({
+    defaultValues: { name: '' },
+    resolver: yupResolver(nameSchema)
+  })
 
   const logoutAccountMutation = useMutation({
     mutationFn: authApi.logoutAccount,
     onSuccess: () => {
       setIsAuthenticated(false)
       setProfile(null)
+      queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
     }
   })
+
+  const { data: purchaseData } = useQuery({
+    queryKey: ['purchases', { status: purchasesStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
+    enabled: isAuthenticated
+  })
+
+  const purchases = purchaseData?.data.data
 
   const handleLogout = () => {
     logoutAccountMutation.mutate()
   }
+
+  const handleSearchSubmit = handleSubmit((data) => {
+    const config = queryConfig.order
+      ? omit(
+        {
+          ...queryConfig,
+          name: data.name
+        },
+        ['order', 'sort_by']
+      )
+      : {
+        ...queryConfig,
+        name: data.name
+      }
+    navigate({
+      pathname: path.home,
+      search: createSearchParams(config).toString()
+    })
+  })
   return (
     <div className='pb-5 pt-2 bg-gradient-to-b from-[#f53d2d] to-[#ff6633] text-white'>
       <div className='container'>
@@ -117,13 +165,13 @@ export default function Header() {
               </g>
             </svg>
           </Link>
-          <form className='col-span-9'>
+          <form className='col-span-9' onSubmit={handleSearchSubmit}>
             <div className='bg-white rounded-sm p-1 flex'>
               <input
                 type='text'
-                name='search'
                 className='text-black px-3 py-2 flex-grow border-none outline-none bg-transparent'
                 placeholder='Free shipping...'
+                {...register('name')}
               />
               <button className='rounded-sm bg-shopee_orange py-2 px-6 flex-shrink-0 hover:opacity-90'>
                 <svg
@@ -146,97 +194,55 @@ export default function Header() {
           <div className='col-span-1 justify-self-end'>
             <Popover
               renderPopover={
-                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] text-sm'>
-                  <div className='p-2'>
-                    <div className='text-gray-400 capitalize'>Recently Added Products</div>
-                    <div className='mt-5'>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
-                        </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
+                <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] max-h-[400px] text-sm'>
+                  {purchases ?
+                    <div className='p-2'>
+                      <div className='text-gray-400 capitalize'>Recently Added Products</div>
+                      <div className='mt-5'>
+                        {purchases.slice(0, MAX).map((purchase) => (
+                          <div className='mt-4 flex' key={purchase._id}>
+                            <div className='flex-shrink-0'>
+                              <img
+                                src={purchase.product.image}
+                                alt={purchase.product.name}
+                                className='w-11 h-11 object-cover'
+                              />
+                            </div>
+                            <div className='flex-grow ml-2 overflow-hidden'>
+                              <div className='truncate'>
+                                {purchase.product.name}
+                              </div>
+                            </div>
+                            <div className='ml-2 flex-shrink-0'>
+                              <span className='text-shopee_orange'>₫{formatCurrency(purchase.product.price_before_discount)}</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-shopee_orange'>₫98.000</span>
-                        </div>
+                        ))}
                       </div>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
-                        </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
-                          </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-shopee_orange'>₫98.000</span>
-                        </div>
-                      </div>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
-                        </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
-                          </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-shopee_orange'>₫98.000</span>
-                        </div>
-                      </div>
-                      <div className='mt-4 flex'>
-                        <div className='flex-shrink-0'>
-                          <img
-                            src='https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lg6ei3uxsl4n4b'
-                            alt='anh'
-                            className='w-11 h-11 object-cover'
-                          />
-                        </div>
-                        <div className='flex-grow ml-2 overflow-hidden'>
-                          <div className='truncate'>
-                            Khăn Tắm LOTUS TOWEL 50x100cm 100% Cotton Cao Cấp Mềm Mịn, Thấm Hút, Không Ra Màu
-                          </div>
-                        </div>
-                        <div className='ml-2 flex-shrink-0'>
-                          <span className='text-shopee_orange'>₫98.000</span>
-                        </div>
+                      <div className='flex mt-6 items-center justify-between'>
+                        <div className='capitalize text-xs text-gray-500'>{purchases.length > MAX ? purchases.length - MAX : ''} More Products in Cart</div>
+                        <button className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
+                          View My Shopping Cart
+                        </button>
                       </div>
                     </div>
-                    <div className='flex mt-6 items-center justify-between'>
-                      <div className='capitalize text-xs text-gray-500'>29 More Products in Cart</div>
-                      <button className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
-                        View My Shopping Cart
-                      </button>
+                    :
+                    <div className='p-2 flex flex-col items-center w-full h-full'>
+                      <img src={notFoundProductIMG} alt="no-found-product" className='px-10 pt-5 w-auto h-[240px]' />
+                      <span className='py-5 text-lg capitalize'>No Product Found</span>
                     </div>
-                  </div>
+                  }
                 </div>
               }
             >
-              <Link to='/'>
+              <Link to={path.cart} className='relative'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   fill='none'
                   viewBox='0 0 24 24'
                   strokeWidth={1.5}
                   stroke='currentColor'
-                  className='h-8 w-8'
+                  className='h-9 w-9'
                 >
                   <path
                     strokeLinecap='round'
@@ -244,6 +250,7 @@ export default function Header() {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
                   />
                 </svg>
+                <div className='absolute bg-white text-shopee_orange top-[-5px] left-[18px] px-2 rounded-full text-xs'>{purchases?.length}</div>
               </Link>
             </Popover>
           </div>
