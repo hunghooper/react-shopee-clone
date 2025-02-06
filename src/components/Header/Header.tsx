@@ -44,7 +44,7 @@ export default function Header() {
     enabled: isAuthenticated
   })
 
-  const purchases = purchaseData?.data.data
+  const purchaseInCart = purchaseData?.data.data
 
   const handleLogout = () => {
     logoutAccountMutation.mutate()
@@ -195,11 +195,11 @@ export default function Header() {
             <Popover
               renderPopover={
                 <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] max-h-[400px] text-sm'>
-                  {purchases ?
+                  {purchaseInCart ?
                     <div className='p-2'>
                       <div className='text-gray-400 capitalize'>Recently Added Products</div>
                       <div className='mt-5'>
-                        {purchases.slice(0, MAX).map((purchase) => (
+                        {purchaseInCart.slice(0, MAX).map((purchase) => (
                           <div className='mt-4 flex' key={purchase._id}>
                             <div className='flex-shrink-0'>
                               <img
@@ -220,7 +220,7 @@ export default function Header() {
                         ))}
                       </div>
                       <div className='flex mt-6 items-center justify-between'>
-                        <div className='capitalize text-xs text-gray-500'>{purchases.length > MAX ? purchases.length - MAX : ''} More Products in Cart</div>
+                        <div className='capitalize text-xs text-gray-500'>{purchaseInCart.length > MAX ? purchaseInCart.length - MAX : ''} More Products in Cart</div>
                         <button className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
                           View My Shopping Cart
                         </button>
@@ -250,7 +250,7 @@ export default function Header() {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
                   />
                 </svg>
-                <div className='absolute bg-white text-shopee_orange top-[-5px] left-[18px] px-2 rounded-full text-xs'>{purchases?.length}</div>
+                <div className='absolute bg-white text-shopee_orange top-[-5px] left-[18px] px-2 rounded-full text-xs'>{purchaseInCart?.length}</div>
               </Link>
             </Popover>
           </div>
