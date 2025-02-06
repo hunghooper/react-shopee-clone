@@ -1,7 +1,6 @@
-import { Category } from "../types/category.type"
-import { SuccessResponse } from "../types/utils.type"
-import http from "../utils/http"
-
+import { Category } from '../types/category.type'
+import { SuccessResponse } from '../types/utils.type'
+import http from '../utils/http'
 
 const URL = 'categories'
 const categoryApi = {

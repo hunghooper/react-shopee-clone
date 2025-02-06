@@ -1,5 +1,5 @@
-import { useState } from "react";
-import InputNumber, { InputNumberProps } from "../InputNumber";
+import { useState } from 'react'
+import InputNumber, { InputNumberProps } from '../InputNumber'
 
 interface QuantityControllerProps extends InputNumberProps {
   max?: number
@@ -9,8 +9,15 @@ interface QuantityControllerProps extends InputNumberProps {
   classNameWrapper?: string
 }
 
-export default function QuantityController({ max = 10, onIncrease, onDecrease, onType, classNameWrapper = 'mr-10', value = 0, ...rest }: QuantityControllerProps) {
-
+export default function QuantityController({
+  max = 10,
+  onIncrease,
+  onDecrease,
+  onType,
+  classNameWrapper = 'mr-10',
+  value = 0,
+  ...rest
+}: QuantityControllerProps) {
   const [localValue, setLocalValue] = useState<number>(Number(value || 0))
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +51,10 @@ export default function QuantityController({ max = 10, onIncrease, onDecrease, o
 
   return (
     <div className={'flex items-center' + classNameWrapper}>
-      <button className='flex h-8 w-8 items-center justify-center text-gray-600 rounded-l-sm border-l-gray-300 border-y-gray-300 border' onClick={decrease}>
+      <button
+        className='flex h-8 w-8 items-center justify-center text-gray-600 rounded-l-sm border-l-gray-300 border-y-gray-300 border'
+        onClick={decrease}
+      >
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
@@ -63,7 +73,10 @@ export default function QuantityController({ max = 10, onIncrease, onDecrease, o
         onChange={handleChange}
         {...rest}
       />
-      <button className=' flex h-8 w-8 items-center justify-center text-gray-600 rounded-r-sm border-r-gray-300 border-y-gray-300 border' onClick={increase}>
+      <button
+        className=' flex h-8 w-8 items-center justify-center text-gray-600 rounded-r-sm border-r-gray-300 border-y-gray-300 border'
+        onClick={increase}
+      >
         <svg
           xmlns='http://www.w3.org/2000/svg'
           fill='none'

@@ -53,16 +53,16 @@ export default function Header() {
   const handleSearchSubmit = handleSubmit((data) => {
     const config = queryConfig.order
       ? omit(
-        {
+          {
+            ...queryConfig,
+            name: data.name
+          },
+          ['order', 'sort_by']
+        )
+      : {
           ...queryConfig,
           name: data.name
-        },
-        ['order', 'sort_by']
-      )
-      : {
-        ...queryConfig,
-        name: data.name
-      }
+        }
     navigate({
       pathname: path.home,
       search: createSearchParams(config).toString()
@@ -195,7 +195,7 @@ export default function Header() {
             <Popover
               renderPopover={
                 <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] max-h-[400px] text-sm'>
-                  {purchaseInCart ?
+                  {purchaseInCart ? (
                     <div className='p-2'>
                       <div className='text-gray-400 capitalize'>Recently Added Products</div>
                       <div className='mt-5'>
@@ -209,29 +209,31 @@ export default function Header() {
                               />
                             </div>
                             <div className='flex-grow ml-2 overflow-hidden'>
-                              <div className='truncate'>
-                                {purchase.product.name}
-                              </div>
+                              <div className='truncate'>{purchase.product.name}</div>
                             </div>
                             <div className='ml-2 flex-shrink-0'>
-                              <span className='text-shopee_orange'>₫{formatCurrency(purchase.product.price_before_discount)}</span>
+                              <span className='text-shopee_orange'>
+                                ₫{formatCurrency(purchase.product.price_before_discount)}
+                              </span>
                             </div>
                           </div>
                         ))}
                       </div>
                       <div className='flex mt-6 items-center justify-between'>
-                        <div className='capitalize text-xs text-gray-500'>{purchaseInCart.length > MAX ? purchaseInCart.length - MAX : ''} More Products in Cart</div>
+                        <div className='capitalize text-xs text-gray-500'>
+                          {purchaseInCart.length > MAX ? purchaseInCart.length - MAX : ''} More Products in Cart
+                        </div>
                         <button className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
                           View My Shopping Cart
                         </button>
                       </div>
                     </div>
-                    :
+                  ) : (
                     <div className='p-2 flex flex-col items-center w-full h-full'>
-                      <img src={notFoundProductIMG} alt="no-found-product" className='px-10 pt-5 w-auto h-[240px]' />
+                      <img src={notFoundProductIMG} alt='no-found-product' className='px-10 pt-5 w-auto h-[240px]' />
                       <span className='py-5 text-lg capitalize'>No Product Found</span>
                     </div>
-                  }
+                  )}
                 </div>
               }
             >
@@ -250,7 +252,9 @@ export default function Header() {
                     d='M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z'
                   />
                 </svg>
-                <div className='absolute bg-white text-shopee_orange top-[-5px] left-[18px] px-2 rounded-full text-xs'>{purchaseInCart?.length}</div>
+                <div className='absolute bg-white text-shopee_orange top-[-5px] left-[18px] px-2 rounded-full text-xs'>
+                  {purchaseInCart?.length}
+                </div>
               </Link>
             </Popover>
           </div>

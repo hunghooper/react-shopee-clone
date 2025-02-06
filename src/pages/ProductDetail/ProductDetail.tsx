@@ -190,11 +190,20 @@ export default function ProductDetail() {
               </div>
               <div className='mt-8 flex items-center'>
                 <span className='text-gray-500 text-sm mr-8'>Quantity</span>
-            <QuantityController onDecrease={handleBuyCount} onType={handleBuyCount} onIncrease={handleBuyCount} value={buyCount} max={product.quantity} />
+                <QuantityController
+                  onDecrease={handleBuyCount}
+                  onType={handleBuyCount}
+                  onIncrease={handleBuyCount}
+                  value={buyCount}
+                  max={product.quantity}
+                />
                 <div className='ml-6 text-sm text-gray-500'>{product.quantity} products</div>
               </div>
               <div className='mt-8 flex items-center'>
-                <button onClick={addToCart} className='flex items-center justify-center text-shopee_orange border border-shopee_orange h-12 shadow-sm rounded-sm bg-shopee_orange/10 hover:bg-shopee_orange/5 px-10 capitalize'>
+                <button
+                  onClick={addToCart}
+                  className='flex items-center justify-center text-shopee_orange border border-shopee_orange h-12 shadow-sm rounded-sm bg-shopee_orange/10 hover:bg-shopee_orange/5 px-10 capitalize'
+                >
                   <img
                     alt='icon-add-to-cart'
                     className='w-5 h-5 mr-[10px]'
