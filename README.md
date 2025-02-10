@@ -1,51 +1,31 @@
-# React + TypeScript + Vite
+# Shopee Clone - Frontend E-Commerce Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a frontend clone of the Shopee e-commerce website, designed to learn and master React. It utilizes a modern tech stack to ensure high performance and maintainability.
 
-Currently, two official plugins are available:
+## 🛠️ Technologies and Tools
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Build Tool**: Vite
+- **Linter**: Prettier, ESLint, Editor Config
+- **SPA Library**: ReactJs
+- **Language**: TypeScript
+- **CSS Libraries**: TailwindCSS, Floating UI
+- **Form Management & Validation**: React Hook Form, Yup
+- **State Management**: React Query, Context API
+- **API Calls**: Axios
+- **Authentication**: JWT (access token + refresh token)
+- **Component Management**: Storybook
 
-## Expanding the ESLint configuration
+## Key Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Responsive Design**: Ensures compatibility across various devices.
+- **User Authentication**: Secure login and session management using JWT.
+- **Product Browsing**: Explore a wide range of products with a user-friendly interface.
+- **Shopping Cart**: Add, update, and remove items from the cart.
+- **Order Management**: Efficiently handle and review orders.
+- **Form Handling**: Streamlined form management and validation with React Hook Form and Yup.
+- **State Management**: Robust state handling with React Query and Context API.
+- **Component Storybook**: Utilize Storybook for consistent component development and management.
 
-- Configure the top-level `parserOptions` property like this:
+---
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
-# react-shopee-clone
+This project serves as a comprehensive learning experience, showcasing the implementation of various modern web development tools and libraries to build a robust e-commerce frontend application.
