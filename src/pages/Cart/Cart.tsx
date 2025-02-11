@@ -175,7 +175,7 @@ export default function Cart() {
                               <div className='flex-grow pt-1 px-2 pb-2'>
                                 <Link
                                   to={`${path.home}${generateNameId({ name: purchase.product.name, id: purchase.product._id })}`}
-                                  className='line-clamp-2'
+                                  className='line-clamp-2 text-left hover:text-shopee_orange'
                                 >
                                   {purchase.product.name}
                                 </Link>

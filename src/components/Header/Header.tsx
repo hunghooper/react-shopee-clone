@@ -1,42 +1,25 @@
-import { createSearchParams, Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Popover from '../Popover'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import authApi from '../../apis/auth.apis'
+import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
 import { AppContext } from '../../contexts/app.context'
 import path from '../../constants/path'
-import useQueryConfig from '../../hooks/useQueryConfig'
-import { schema, Schema } from '../../utils/rules'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { omit } from 'lodash'
+
 import { purchasesStatus } from '../../constants/purchase'
 import purchaseApi from '../../apis/purchase.api'
 import { formatCurrency } from '../../utils/utils'
 import notFoundProductIMG from '../../assets/img/not-found-product.png'
-import { queryClient } from '../../main'
+import { Purchase } from '../../types/purchase.type'
+import NavHeader from '../NavHeader'
+import useSearchProducts from '../../hooks/useSearchProducts'
 
-type FormData = Pick<Schema, 'name'>
-const nameSchema = schema.pick(['name'])
+
 const MAX = 5
 
 export default function Header() {
-  const { setIsAuthenticated, isAuthenticated, setProfile, profile } = useContext(AppContext)
-  const queryConfig = useQueryConfig()
-  const navigate = useNavigate()
-  const { register, handleSubmit } = useForm<FormData>({
-    defaultValues: { name: '' },
-    resolver: yupResolver(nameSchema)
-  })
+  const { isAuthenticated } = useContext(AppContext)
 
-  const logoutAccountMutation = useMutation({
-    mutationFn: authApi.logoutAccount,
-    onSuccess: () => {
-      setIsAuthenticated(false)
-      setProfile(null)
-      queryClient.removeQueries({ queryKey: ['purchases', { status: purchasesStatus.inCart }] })
-    }
-  })
+  const { register, handleSearchSubmit } = useSearchProducts()
 
   const { data: purchaseData } = useQuery({
     queryKey: ['purchases', { status: purchasesStatus.inCart }],
@@ -46,117 +29,10 @@ export default function Header() {
 
   const purchaseInCart = purchaseData?.data.data
 
-  const handleLogout = () => {
-    logoutAccountMutation.mutate()
-  }
-
-  const handleSearchSubmit = handleSubmit((data) => {
-    const config = queryConfig.order
-      ? omit(
-          {
-            ...queryConfig,
-            name: data.name
-          },
-          ['order', 'sort_by']
-        )
-      : {
-          ...queryConfig,
-          name: data.name
-        }
-    navigate({
-      pathname: path.home,
-      search: createSearchParams(config).toString()
-    })
-  })
   return (
     <div className='pb-5 pt-2 bg-gradient-to-b from-[#f53d2d] to-[#ff6633] text-white'>
       <div className='container'>
-        <div className='flex justify-end'>
-          <Popover
-            className='flex items py-1 hover:text-white/70 cursor-pointer'
-            renderPopover={
-              <div className='bg-white relative shadow-md rounded-sm border border-gray-200 pr-28 pl-0.8'>
-                <div className='flex flex-col py-2 px-3'>
-                  <button className='py-2 px-3 hover:text-shopee_orange text-left'>Tiếng Việt</button>
-                  <button className='py-2 px-3 hover:text-shopee_orange mt-1 text-left'>English</button>
-                </div>
-              </div>
-            }
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='w-5 h-5'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418'
-              />
-            </svg>
-            <span className='mx-1'>Tiếng Việt</span>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-              strokeWidth={1.5}
-              stroke='currentColor'
-              className='w-5 h-5'
-            >
-              <path strokeLinecap='round' strokeLinejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' />
-            </svg>
-          </Popover>
-          {isAuthenticated && (
-            <Popover
-              className='flex items-center py-1 hover:text-white/70 cursor-pointer ml-6'
-              renderPopover={
-                <div className='bg-white relative shadow-md rounded-sm border border-gray-200'>
-                  <Link
-                    to={path.profile}
-                    className='block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left'
-                  >
-                    My account
-                  </Link>
-                  <Link
-                    to={'/'}
-                    className='block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left'
-                  >
-                    Order
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className='block py-4 px-3 hover:bg-slate-100 bg-white hover:text-shopee_orange w-full text-left'
-                  >
-                    Logout
-                  </button>
-                </div>
-              }
-            >
-              <div className='w-6 h-6 mr-2 flex-shrink-0'>
-                <img
-                  src='https://down-vn.img.susercontent.com/file/691744eacbab85fed63697cf61fd7c66_tn'
-                  alt='avatar'
-                  className='w-full h-full object-cover rounded-full'
-                />
-              </div>
-              <div>{profile?.email}</div>
-            </Popover>
-          )}
-          {!isAuthenticated && (
-            <div className='flex items-center'>
-              <Link to={'/register'} className='mx-3 capitalize hover:text-white/70'>
-                Register
-              </Link>
-              <div className='border-r-[1px] border-r-white/40 h-4'></div>
-              <Link to={'/login'} className='mx-3 capitalize hover:text-white/70'>
-                Login
-              </Link>
-            </div>
-          )}
-        </div>
+        <NavHeader />
         <div className='grid grid-cols-12 gap-4 mt-4 items-end'>
           <Link to='/' className='col-span-2 '>
             <svg viewBox='0 0 192 65' className='h- w-full fill-white'>
@@ -195,11 +71,11 @@ export default function Header() {
             <Popover
               renderPopover={
                 <div className='bg-white relative shadow-md rounded-sm border border-gray-200 max-w-[400px] max-h-[400px] text-sm'>
-                  {purchaseInCart ? (
+                  {(purchaseInCart as Purchase[])?.length > 0 ? (
                     <div className='p-2'>
                       <div className='text-gray-400 capitalize'>Recently Added Products</div>
                       <div className='mt-5'>
-                        {purchaseInCart.slice(0, MAX).map((purchase) => (
+                        {purchaseInCart && purchaseInCart.slice(0, MAX).map((purchase) => (
                           <div className='mt-4 flex' key={purchase._id}>
                             <div className='flex-shrink-0'>
                               <img
@@ -221,11 +97,11 @@ export default function Header() {
                       </div>
                       <div className='flex mt-6 items-center justify-between'>
                         <div className='capitalize text-xs text-gray-500'>
-                          {purchaseInCart.length > MAX ? purchaseInCart.length - MAX : ''} More Products in Cart
+                          {purchaseInCart && purchaseInCart.length > MAX ? purchaseInCart.length - MAX : ''} More Products in Cart
                         </div>
-                        <button className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
+                        <Link to={path.cart} className='capitalize hover:bg-opacity-80 px-4 py-2 rounded-sm text-white bg-shopee_orange'>
                           View My Shopping Cart
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   ) : (
