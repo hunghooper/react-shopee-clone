@@ -13,6 +13,7 @@ import { keyBy } from 'lodash'
 import { toast } from 'react-toastify'
 import notFoundProductIMG from '../../assets/img/not-found-product.png'
 import { AppContext } from '../../contexts/app.context'
+import RecommendProducts from '../../components/RecommendProducts'
 
 
 
@@ -269,6 +270,7 @@ export default function Cart() {
           )
         }
       </div>
+      <RecommendProducts />
     </div>
   )
 }

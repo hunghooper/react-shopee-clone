@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import { queryClient } from '../../main'
 import { purchasesStatus } from '../../constants/purchase'
 import path from '../../constants/path'
+import RecommendProducts from '../../components/RecommendProducts'
 
 export default function ProductDetail() {
   const [buyCount, setBuyCount] = useState(1)
@@ -235,19 +236,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
-      <div className='container'>
-        <div className='mt-8 p-4'>
-          <div className=' text-lg uppercase text-slate-700 py-4'>you may also like</div>
-          <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3'>
-            {productsData &&
-              productsData?.data.data.products.map((product) => (
-                <div className='col-span-1' key={product._id}>
-                  <Product product={product} />
-                </div>
-              ))}
-          </div>
-        </div>
-      </div>
+      <RecommendProducts />
     </div>
   )
 }
