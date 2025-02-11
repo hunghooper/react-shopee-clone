@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import DOMPurify from 'dompurify'
 import { Product as ProductType, ProductListConfig } from '../../types/product.type'
 import Product from '../ProductList/components/Product'
@@ -12,9 +12,11 @@ import purchaseApi from '../../apis/purchase.api'
 import { toast } from 'react-toastify'
 import { queryClient } from '../../main'
 import { purchasesStatus } from '../../constants/purchase'
+import path from '../../constants/path'
 
 export default function ProductDetail() {
   const [buyCount, setBuyCount] = useState(1)
+  const navigate = useNavigate()
   const { nameId } = useParams()
   const id = getIdFromNameId(nameId as string)
   const [currentIndexImages, setCurrentIndexImage] = useState([0, 5])
@@ -99,6 +101,12 @@ export default function ProductDetail() {
 
   const addToCart = () => {
     addToCartMutation.mutate({ buy_count: buyCount, product_id: product?._id as string })
+  }
+
+  const handleBuyNow = async () => {
+    const res = await addToCartMutation.mutateAsync({ buy_count: buyCount, product_id: product?._id as string })
+    const purchase = res.data.data
+    navigate(path.cart, { state: { purchaseId: purchase._id } })
   }
 
   if (!product) return null
@@ -211,7 +219,7 @@ export default function ProductDetail() {
                   />
                   Add to cart
                 </button>
-                <button className='ml-4 min-w-[5rem] outline-none text-white bg-shopee_orange capitalize h-12 shadow-sm rounded-sm hover:bg-shopee_orange/90 px-10'>
+                <button onClick={handleBuyNow} className='ml-4 min-w-[5rem] outline-none text-white bg-shopee_orange capitalize h-12 shadow-sm rounded-sm hover:bg-shopee_orange/90 px-10'>
                   Buy now
                 </button>
               </div>
